@@ -18,6 +18,7 @@
         canvas.height = document.documentElement.clientHeight//一般body的高度是由其内容的高度决定的
         var ctx = canvas.getContext("2d");
         ctx.fillStyle = "blue";
+        ctx.strokeStyle = 'none';
 
         let painting = false;
         canvas.onmousedown = () => {
@@ -25,7 +26,13 @@
         }
         canvas.onmousemove = (e) => {
             if (painting === true) {
-                ctx.fillRect(e.clientX - 5, e.clientY - 5, 10, 10);
+                //画方形
+                //ctx.fillRect(e.clientX - 5, e.clientY - 5, 10, 10);
+                //画圆形
+                ctx.beginPath();
+                ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);//第一个是圆心的X坐标，第二个是圆心的Y坐标，第三个是圆的半径，第四个是角度
+                ctx.stroke();//描边
+                ctx.fill();
             }
             else {
                 console.log('什么都不做')
