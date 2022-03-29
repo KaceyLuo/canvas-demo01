@@ -19,29 +19,85 @@
         var ctx = canvas.getContext("2d");
         ctx.fillStyle = "blue";
         ctx.strokeStyle = 'none';
+        ctx.lineWidth = 8//画线的粗细
+        ctx.lineCap = "round";//画线后角是圆的
+
+
+        //画三角形
+        //ctx.beginPath();
+        // ctx.moveTo(0, 0);//把端点移到（0，0）
+        // ctx.lineTo(500, 500);//往（500，500）画线
+        // ctx.lineTo(0, 500);
+        // ctx.closePath();
+        // ctx.stroke();
+        //画线
+        function drawLine(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
 
         let painting = false;
-        canvas.onmousedown = () => {
-            painting = true;
+        let last;
+
+        var isTouchDevice = 'ontouchstart' in document.documentElement;//可以在手机上画图
+
+
+        if (isTouchDevice) {
+            //canvas.ontouchmove = (e) => //在电脑上需要监测鼠标事件
+            canvas.ontouchstart = (e) =>//在手机上不需要监听鼠标事件
+            {
+
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                //用点画图
+                // ctx.beginPath();
+                // ctx.arc(x, y, 10, 0, 2 * Math.PI);
+                // ctx.stroke();//描边
+                // ctx.fill();//填充
+                //用线画图
+                last = [x, y]
+            }
+            canvas.ontouchmove = (e) => {
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                drawLine(last[0], last[1], x, y)
+                last = [x, y]
+            }
         }
-        canvas.onmousemove = (e) => {
-            if (painting === true) {
-                //画方形
-                //ctx.fillRect(e.clientX - 5, e.clientY - 5, 10, 10);
-                //画圆形
-                ctx.beginPath();
-                ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);//第一个是圆心的X坐标，第二个是圆心的Y坐标，第三个是圆的半径，第四个是角度
-                ctx.stroke();//描边
-                ctx.fill();
+        else {
+            canvas.onmousedown = (e) => {
+                painting = true;
+                last = [e.clientX, e.clientY]
             }
-            else {
-                console.log('什么都不做')
+            canvas.onmousemove = (e) => {
+                if (painting === true) {
+                    //画方形
+                    //ctx.fillRect(e.clientX - 5, e.clientY - 5, 10, 10);
+                    //画圆形
+                    // ctx.beginPath();
+                    // ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);//第一个是圆心的X坐标，第二个是圆心的Y坐标，第三个是圆的半径，第四个是角度
+                    // ctx.stroke();//描边
+                    // ctx.fill();
+                    //画线
+                    drawLine(last[0], last[1], e.clientX, e.clientY)
+                    last = [e.clientX, e.clientY]
+
+                }
+                else {
+                    console.log('什么都不做')
+                }
             }
+            canvas.onmouseup = () => {
+                painting = false;
+            }
+
+
         }
 
-        canvas.onmouseup = () => {
-            painting = false;
-        }
+
     </script>
 
 </body>
